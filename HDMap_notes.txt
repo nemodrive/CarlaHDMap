@@ -1,0 +1,39 @@
+HDMap elements of interest:
+- Road
+  Consists of road sections (we'll leave it at one section) and a junction_id,
+  if the road is contained within a junction.
+  The road section consists of lanes with the same direction.
+- Lane
+  The most complex structure, containing a lot of information regarding a single
+  lane. Its main components are:
+  - the center of the lane
+  - the left and right boundaries of the lane
+  - length and speed limit
+  - the ids of the overlap structures associated with the lane
+  - the previous and the next lane
+  - the left and right neighbor lane, from the same road structure (in case of
+  a multilane road structure)
+  - type of lane (CITY_DRIVING, BIKING, SIDEWALK, PARKING)
+  - the type of turn the lane makes
+  - left and right distances from lane center to lane boundaries, each point on
+  the lane center being sampled relative to the lane start
+  - direction (which I can't see why it wouldn't always be FORWARD)
+  Note: There is also a field junction_id that need not be used, as in the case
+  of overlap with a junction, this would already be marked in an overlap
+  structure.
+  Left and right boundaries could normally be defined in Carla as being at a
+  constant distance from the lane center, as lanes have the same width
+  everywhere.
+- Junction
+  Consists of a polygon that encloses the area of the junction and a series of
+  overlap ids.
+- Overlap
+  It's represented as a pair of overlaping objects, each of which could be a
+  lane, a junction, a stop sign etc.
+  The lane overlap structure contains information about the start and end points
+  of the overlap, relative to the start of the lane.
+
+Useful contour lines:
+- road edges
+- road center
+- lanes center
