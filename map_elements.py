@@ -108,8 +108,7 @@ class Junction:
         # Add the polygon vertices
         for vertex in junc_poly:
             point = self.junction.polygon.point.add()
-            point.x = vertex[0]
-            point.y = vertex[1]
+            point.x, point.y = vertex
 
     def getPolygon(self):
         return self._polygon

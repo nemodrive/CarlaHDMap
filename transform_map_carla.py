@@ -117,14 +117,23 @@ if __name__ == '__main__':
     #
     # display_contours(all_contours, map_img.shape)
 
+    # Create map object
+    # map = map_pb2.Map()
+
+    # Create basic road objects
+    # Create basic lane objects
+    # Create basic junction objects
+    # Create overlap objects
+    # Link junctions to roads
+    # lane1 = Lane("1", map)
+    # lane2 = Lane("2", map)
+    #
+    # polygon = np.array([np.array([0,1]), np.array([1,2]), np.array([2,3])])
+    # junction = Junction("3", map)
+    # junction.add(polygon)
+    #
+    # print(str(map))
+
+    file = open("/home/alexm/Desktop/base_map.txt", 'rb')
     map = map_pb2.Map()
-    lane1 = Lane("1", map)
-    lane2 = Lane("2", map)
-
-    polygon = np.array([np.array([0,1]), np.array([1,2]), np.array([2,3])])
-    junction = Junction("3", map)
-    junction.add(polygon)
-
-    print(str(map))
-
-
+    # map.ParseFromString(file.read())
