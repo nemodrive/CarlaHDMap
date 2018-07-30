@@ -1,5 +1,5 @@
 import sys
-
+import numpy as np
 from modules.map.proto import map_pb2
 from modules.map.proto import map_lane_pb2
 from modules.map.proto import map_road_pb2
@@ -69,6 +69,7 @@ class Lane:
 			point[i].x = points[i].x
 			point[i].y = points[i].y
 			point[i].z = points[i].z
+		self.leftPolySide = np.array(point)
 		return left_boundary
 		
 	def addRightLaneBoundary(self, length, virtual, s, x, y, z, heading, type, points):
@@ -96,6 +97,7 @@ class Lane:
 			point[i].x = points[i].x
 			point[i].y = points[i].y
 			point[i].z = points[i].z
+		self.rightPolySide = np.array(point)
 		return right_boundary
 	
 	def addCentralCurve(self, length, s, x, y, z, heading, points):
@@ -198,7 +200,11 @@ class Lane:
 		rp.append(p.x + (math.cos(right_angle) * distance))
 		rp.append(p.y + (math.sin(right_angle) * distance))
 		return lp, rp
-
+	
+	def getPolygon(self):
+		self.polygon = np.append(self.leftPolySide, np.flipud(self.rightPolySide))
+		return self.polygon
+	
 class Road:
 	def __init__(self, id, map):
 		self.road = map.road.add()
@@ -232,6 +238,7 @@ class Road:
 			point[i].x = points[i].x
 			point[i].y = points[i].y
 			point[i].z = points[i].z
+		self.polygon = np.array(point)
 		
 #testing class methods..
 		
@@ -245,6 +252,7 @@ for i in range(10):
 left_boundary = laneObj.addLeftLaneBoundary(19, True, 0, 1, 1, 0, 2, map_lane_pb2.LaneBoundaryType.DOTTED_YELLOW, points)
 right_boundary = laneObj.addRightLaneBoundary(19, True, 0, 1, 1, 0, 2, map_lane_pb2.LaneBoundaryType.DOTTED_YELLOW, points)
 central_curve = laneObj.addCentralCurve(10, 1, 1, 1, 0, 1, points)
+polygon = laneObj.getPolygon()
 laneObj.addLeftRoadSampleAssoc(1.0, 20.0)
 laneObj.addRightRoadSampleAssoc(1.0, 20.0)
 laneObj.addOverlap(2)	
@@ -253,13 +261,11 @@ laneObj.addLeftForwardNeighbor(3)
 laneObj.addLeftForwardNeighbor(3)
 laneObj.setType(map_lane_pb2.Lane.CITY_DRIVING)
 laneObj.setTurn(map_lane_pb2.Lane.NO_TURN)
-
 laneObj.laneSampling(points2D, 3.3, left_boundary, right_boundary, central_curve)
-
 roadObj = Road(1, map)
 roadObj.addSection(2)
 roadObj.addLanes2Section([1,2,3])
 roadObj.addJunction(3)
-
 roadObj.addRoadBoundary(map_road_pb2.BoundaryEdge.NORMAL, 0, 0, 0, 1, 1, 100, points)
+
 
