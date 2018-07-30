@@ -118,17 +118,12 @@ if __name__ == '__main__':
     # display_contours(all_contours, map_img.shape)
 
     map = map_pb2.Map()
-    lane1 = map.lane.add()
-    lane1.id.id = "1"
-    lane2 = map.lane.add()
-    lane2.id.id = "2"
+    lane1 = Lane("1", map)
+    lane2 = Lane("2", map)
 
-    polygon = [np.array([0,1]), np.array([1,2]), np.array([2,3])]
-    junction = Junction("3")
-    junction.add(map, polygon)
-
-    overlap = Overlap("4")
-    overlap.add(map, lane1, junction.apollo_obj)
+    polygon = np.array([np.array([0,1]), np.array([1,2]), np.array([2,3])])
+    junction = Junction("3", map)
+    junction.add(polygon)
 
     print(str(map))
 

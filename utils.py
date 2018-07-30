@@ -35,7 +35,7 @@ def display_contours(contours, map_shape, window_name="Contours"):
     if len(contours) != 0:
         white_img = np.zeros(map_shape)
         white_img[:] = WHITE
-        # draw in blue the contours that were founded
+        # draw in red the contours that were found
         # cv2.drawContours(white_img, contours, -1, (0, 0, 255), 1)
         for line in contours:
             for i in range(len(line) - 1):
