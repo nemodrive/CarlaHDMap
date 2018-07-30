@@ -150,12 +150,6 @@ class Lane:
 	def addRightReverseNeighbor(self,id):
 		self.lane.right_neighbor_reverse_lane_id.add().id = str(id)
 
-	def addLaneSuccessor(self, id):
-		self.lane.successor_id.add().id = id
-
-	def addLanePredecessor(self, id):
-		self.lane.predecessor_id.add().id = id
-
 	def laneSampling(self, points, width, left_boundary, right_boundary, central_curve):
 		path = LineString(points)
 		length = int(path.length)
