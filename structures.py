@@ -45,43 +45,37 @@ class Lane:
     def setTurn(self, turn):
         self.lane.turn = turn
 
-    def addLeftLaneBoundary(self, length, virtual, x, y, z, heading, type):#removed s
+    def addLeftLaneBoundary(self, virtual, x, y, z, heading, type):#removed s
         #boundary type params
         boundary_type = self.lane.left_boundary.boundary_type.add()
         boundary_type.types.append(type) # map_lane_pb2.LaneBoundaryType.DOTTED_YELLOW
-        self.lane.left_boundary.length = length #double
         self.lane.left_boundary.virtual = virtual #bool
 
         #curve segment params
         left_boundary = self.lane.left_boundary.curve.segment.add()
         left_boundary.heading = heading
-        left_boundary.length = length
         left_boundary.start_position.x = x
         left_boundary.start_position.y = y
         left_boundary.start_position.z = z
-
         return left_boundary
 
-    def addRightLaneBoundary(self, length, virtual, x, y, z, heading, type):#removed s
+    def addRightLaneBoundary(self, virtual, x, y, z, heading, type):#removed s
         #boundary type params
         boundary_type = self.lane.right_boundary.boundary_type.add()
         boundary_type.types.append(type) # map_lane_pb2.LaneBoundaryType.DOTTED_YELLOW
-        self.lane.right_boundary.length = length #double
         self.lane.right_boundary.virtual = virtual #bool
 
         #curve segment params
         right_boundary = self.lane.right_boundary.curve.segment.add()
         right_boundary.heading = heading
-        right_boundary.length = length
         right_boundary.start_position.x = x
         right_boundary.start_position.y = y
         right_boundary.start_position.z = z
         return right_boundary
 
-    def addCentralCurve(self, length, x, y, z, heading): #removed s
+    def addCentralCurve(self, x, y, z, heading): #removed s, removed length
         central_curve = self.lane.central_curve.segment.add()
         central_curve.heading = heading
-        central_curve.length = length
         central_curve.start_position.x = x
         central_curve.start_position.y = y
         central_curve.start_position.z = z
@@ -123,8 +117,17 @@ class Lane:
     def laneSampling(self, points, width, left_boundary, right_boundary, central_curve):
         path = LineString(points)
         length = int(path.length)
-        leftPoly = []
-        rightPoly = []
+        self.leftPoly = []
+        self.rightPoly = []
+        
+        #variables used to compute central line and boundaries length
+        cDist = 0
+        cx, cy = (central_curve.start_position.x, central_curve.start_position.y)
+        lDist = 0
+        lx, ly = (left_boundary.start_position.x, central_curve.start_position.y)
+        rDist = 0
+        rx, ry = (right_boundary.start_position.x, central_curve.start_position.y)
+        
         for i in range(length - 1):
             left_bound_point = left_boundary.line_segment.point.add()
             right_bound_point = right_boundary.line_segment.point.add()
@@ -141,12 +144,24 @@ class Lane:
 
             left_bound_point.x = lp[0]
             left_bound_point.y = lp[1]
+            lDist += math.sqrt(math.pow(lp[0] - lx, 2) + math.pow(lp[1] - ly, 2))
+            lx = lp[0]
+            ly = lp[1]
+            
             right_bound_point.x = rp[0]
             right_bound_point.y = rp[1]
+            rDist += math.sqrt(math.pow(rp[0] - rx, 2) + math.pow(rp[1] - ry, 2))
+            rx = rp[0]
+            ry = rp[1]
+            
             central_point.x = p.x
             central_point.y = p.y
-            leftPoly.append(np.array(lp))
-            rightPoly.append(np.array(rp))
+            lDist += math.sqrt(math.pow(p.x - cx, 2) + math.pow(p.y - cy, 2))
+            cx = p.x
+            cy = p.y
+            
+            self.leftPoly.append(np.array(lp))
+            self.rightPoly.append(np.array(rp))
 
             left_sample = self.lane.left_sample.add()
             left_sample.s = i + 1
@@ -155,8 +170,12 @@ class Lane:
             right_sample = self.lane.right_sample.add()
             right_sample.s = i + 1
             right_sample.width = width / 2.0
-
-        self._polygon = leftPoly + list(reversed(rightPoly))
+		
+        central_curve.length = cDist
+        left_boundary.length = lDist
+        right_boundary.length = rDist
+		
+        self._polygon = self.leftPoly + list(reversed(self.rightPoly))
 
     def convert(self, p, p2, distance):
         delta_y = p2.y - p.y
@@ -180,7 +199,7 @@ class Lane:
     def getID(self):
         return self._id
 
-    def add(self, id, length, speedLimit, turnType, laneType, heading, boundType, points, virtual, width):
+    def add(self, length, speedLimit, turnType, laneType, heading, boundType, points, virtual, width):
         lane.setLength(length)
         lane.setSpeedLimit(speedLimit)
         lane.setTurn(turnType)
@@ -192,9 +211,9 @@ class Lane:
         distance = width / 2.0
         lp, rp = self.convert(p, p2, distance)
         
-        central_curve = lane.addCentralCurve(length, points[0][0], points[0][1], 0, heading)
-        left_boundary = lane.addLeftLaneBoundary(length, virtual, lp[0], lp[1], 0, heading, boundType)
-        right_boundary = lane.addRightLaneBoundary(length, virtual, rp[0], rp[1], 0, heading, boundType)
+        central_curve = lane.addCentralCurve(points[0][0], points[0][1], 0, heading)
+        left_boundary = lane.addLeftLaneBoundary(virtual, lp[0], lp[1], 0, heading, boundType)
+        right_boundary = lane.addRightLaneBoundary(virtual, rp[0], rp[1], 0, heading, boundType)
         lane.laneSampling(points, width, left_boundary, right_boundary, central_curve)
 
 class Road:
@@ -214,7 +233,7 @@ class Road:
     def addJunction(self, id):
         self.road.junction_id.id = str(id)
 
-    def addRoadBoundary(self, type, x, y, z, heading, length, points):
+    def addRoadBoundary(self, type, x, y, z, heading, points):
         edge = self.section.boundary.outer_polygon.edge.add()
         edge.type = type
         segment = edge.curve.segment.add()
@@ -222,20 +241,30 @@ class Road:
         segment.start_position.y = y
         segment.start_position.z = z
         segment.heading = heading
-        segment.length = length
+        length = 0
+        prevX, prevY = points[0]
         for point in points:
             p = segment.line_segment.point.add()
             p.x, p.y = point
+            length += math.sqrt(math.pow(p.x - prevX, 2) + math.pow(p.y - prevY, 2))
+            prevX = p.x
+            prevY = p.y
+        segment.length = length
 
     def getID(self):
         return self._id
        
-    def add(self, section_id, junction_ids, laneIds, heading, length, points, type):
+    def add(self, section_id, junction_ids, laneIds, heading, lane):
     	road.addSection(section_id)
     	for j in junction_ids:
     		road.addJunction(j)
     	road.addLanes2Section(laneIds)
-    	road.addRoadBoundary(type, points[0][0], points[0][1], 0, heading, length, points)
+    	lx = lane.leftPoly[0][0]
+    	ly = lane.leftPoly[0][1]
+    	road.addRoadBoundary(map_road_pb2.BoundaryEdge.LEFT_BOUNDARY, lx, ly, 0, heading, lane.leftPoly)
+    	rx = lane.rightPoly[0][0]
+    	ry = lane.rightPoly[0][1]
+    	road.addRoadBoundary(map_road_pb2.BoundaryEdge.RIGHT_BOUNDARY, rx, ry, 0, heading, lane.rightPoly)
     	
 
 #testing lane methods
@@ -244,11 +273,11 @@ lane = Lane(1, map)
 points2D = []
 for i in range(10):
     points2D.append((i,i+1))
-lane.add(1, 100, 50, map_lane_pb2.Lane.NO_TURN, map_lane_pb2.Lane.CITY_DRIVING,
+lane.add(100, 50, map_lane_pb2.Lane.NO_TURN, map_lane_pb2.Lane.CITY_DRIVING,
          1, map_lane_pb2.LaneBoundaryType.DOTTED_YELLOW, points2D, True, 3.3)
 
 #testing road methods
 road = Road(1, map)
-road.add(1, [1,2], [-1,0,1], 1, 100, points2D, map_road_pb2.BoundaryEdge.NORMAL)
+road.add(1, [1,2], [-1,0,1], 1, lane)
 
 
