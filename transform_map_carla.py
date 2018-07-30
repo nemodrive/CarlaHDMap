@@ -4,12 +4,20 @@ import cv2
 import pandas as pd
 import numpy as np
 from utils import *
+from map_elements import *
+from modules.map.proto import map_pb2
+from modules.map.proto import map_lane_pb2
+from modules.map.proto import map_road_pb2
+from modules.map.proto import map_overlap_pb2
+from modules.map.proto import map_junction_pb2
 
 
 LANES_SEPARATED = True
 CROPPED_LANE_SEPARATORS_FILE = 'cropped_lane_separators.pkl'
 CONTOURS_GENERATED = True
 CONTOURS_FILE = 'contours.pkl'
+RAW_DATA_GENERATED = True
+RAW_DATA_FILE = 'raw_data.pkl'
 
 
 def get_points(map_img, lane_map_img):
@@ -86,15 +94,42 @@ if __name__ == '__main__':
         contours['lanes'] = lanes
         pkl.dump(contours, open(CONTOURS_FILE, 'wb'))
 
-    # Determine the road's junction polygons
-    junctions = detect_junctions(map_img)
+    if RAW_DATA_GENERATED and os.path.exists(RAW_DATA_FILE):
+        contours, junctions = pkl.load(open(RAW_DATA_FILE, 'rb'))
+    else:
+        # Determine the road's junction polygons
+        junctions = detect_junctions(map_img)
 
-    # Split straight lanes at junctions
-    contours['lanes']['straight'] = split_at_junctions(contours['lanes']['straight'], junctions)
+        # Split straight lanes at junctions
+        contours['lanes']['straight'] = split_at_junctions(contours['lanes']['straight'], junctions)
+
+        # Convert lane points from pixel coordinates to Carla coordinates
+        for lntype in contours['lanes']:
+            for i in range(len(contours['lanes'][lntype])):
+                contours['lanes'][lntype][i] = list(map(pixel_to_coord, contours['lanes'][lntype][i]))
+
+        # Save raw data
+        pkl.dump((contours, junctions), open(RAW_DATA_FILE, 'wb'))
 
     # all_contours = junctions + contours['road_edges'] + contours['lane_separators']
     # for lane in contours['lanes']:
     #     all_contours += contours['lanes'][lane]
     #
     # display_contours(all_contours, map_img.shape)
+
+    map = map_pb2.Map()
+    lane1 = map.lane.add()
+    lane1.id.id = "1"
+    lane2 = map.lane.add()
+    lane2.id.id = "2"
+
+    polygon = [np.array([0,1]), np.array([1,2]), np.array([2,3])]
+    junction = Junction("3")
+    junction.add(map, polygon)
+
+    overlap = Overlap("4")
+    overlap.add(map, lane1, junction.apollo_obj)
+
+    print(str(map))
+
 
