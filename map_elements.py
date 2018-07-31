@@ -134,12 +134,13 @@ class Lane(RoadObject):
         lx, ly = (left_boundary.start_position.x, central_curve.start_position.y)
         r_dist = 0
         rx, ry = (right_boundary.start_position.x, central_curve.start_position.y)
-
+        
+        # sample more often when angle changes(considered only horizontal and vertical lines)
+        p = path.interpolate(1)
+        prev_x = p.x
+        prev_y = p.y
+        
         for i in range(length - 1):
-            left_bound_point = left_boundary.line_segment.point.add()
-            right_bound_point = right_boundary.line_segment.point.add()
-            central_point = central_curve.line_segment.point.add()
-
             if i > 0:
                 p = path.interpolate(i - 1)
                 p2 = path.interpolate(i - 1 + 0.5)
@@ -149,6 +150,15 @@ class Lane(RoadObject):
             distance = width / 2.0
             lp, rp = self.convert(p, p2, distance)
 
+            if(prev_x == p.x || prev_y == p.y || i % 10 != 0)
+                continue            
+            prev_x = p.x
+            prev_y = p.y
+            
+            left_bound_point = left_boundary.line_segment.point.add()
+            right_bound_point = right_boundary.line_segment.point.add()
+            central_point = central_curve.line_segment.point.add()
+            
             left_bound_point.x = lp[0]
             left_bound_point.y = lp[1]
             l_dist += math.sqrt(math.pow(lp[0] - lx, 2) + math.pow(lp[1] - ly, 2))
@@ -246,8 +256,13 @@ class Road(RoadObject):
         segment.start_position.x, segment.start_position.y = points[0]
         segment.heading = heading
         length = 0
+        step = 0
         prevX, prevY = points[0]
         for point in points[1:]:
+            step++ 
+            x, y = point
+            if(x == prevX || y == prevY || step % 10 != 0)
+                continue
             p = segment.line_segment.point.add()
             p.x, p.y = point
             length += math.sqrt(math.pow(p.x - prevX, 2) + math.pow(p.y - prevY, 2))
