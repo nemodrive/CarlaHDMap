@@ -150,7 +150,9 @@ class Lane(RoadObject):
             distance = width / 2.0
             lp, rp = self.convert(p, p2, distance)
 
-            if(prev_x == p.x || prev_y == p.y || i % 10 != 0)
+            if((prev_x == p.x || prev_y == p.y) && i % 10 != 0)
+                continue
+            if(prev.x != p.x && prev.y == p.y && i % 3 != 0)
                 continue            
             prev_x = p.x
             prev_y = p.y
@@ -261,8 +263,10 @@ class Road(RoadObject):
         for point in points[1:]:
             step++ 
             x, y = point
-            if(x == prevX || y == prevY || step % 10 != 0)
+            if((prev_x == x || prev_y == y) && step % 10 != 0)
                 continue
+            if(prev.x != x && prev.y == y && step % 3 != 0)
+                continue    
             p = segment.line_segment.point.add()
             p.x, p.y = point
             length += math.sqrt(math.pow(p.x - prevX, 2) + math.pow(p.y - prevY, 2))
