@@ -1,15 +1,9 @@
 import pickle as pkl
 import os
-import cv2
-import pandas as pd
-import numpy as np
 from utils import *
 from map_elements import *
 from modules.map.proto import map_pb2
 from modules.map.proto import map_lane_pb2
-from modules.map.proto import map_road_pb2
-from modules.map.proto import map_overlap_pb2
-from modules.map.proto import map_junction_pb2
 
 
 LANES_SEPARATED = True
@@ -108,32 +102,109 @@ if __name__ == '__main__':
             for i in range(len(contours['lanes'][lntype])):
                 contours['lanes'][lntype][i] = list(map(pixel_to_coord, contours['lanes'][lntype][i]))
 
+        # Convert junction polygons from pixel coordinates to Carla coordinates
+        for i in range(len(junctions)):
+            junctions[i] = list(map(pixel_to_coord, junctions[i]))
+
+
         # Save raw data
         pkl.dump((contours, junctions), open(RAW_DATA_FILE, 'wb'))
 
-    # all_contours = junctions + contours['road_edges'] + contours['lane_separators']
-    # for lane in contours['lanes']:
-    #     all_contours += contours['lanes'][lane]
-    #
-    # display_contours(all_contours, map_img.shape)
-
     # Create map object
-    # map = map_pb2.Map()
-
-    # Create basic road objects
-    # Create basic lane objects
-    # Create basic junction objects
-    # Create overlap objects
-    # Link junctions to roads
-    # lane1 = Lane("1", map)
-    # lane2 = Lane("2", map)
-    #
-    # polygon = np.array([np.array([0,1]), np.array([1,2]), np.array([2,3])])
-    # junction = Junction("3", map)
-    # junction.add(polygon)
-    #
-    # print(str(map))
-
-    file = open("/home/alexm/Desktop/base_map.txt", 'rb')
     map = map_pb2.Map()
-    # map.ParseFromString(file.read())
+
+    # Constant values
+    SPEED_LIMIT = 60
+    LANE_TYPE = map_lane_pb2.Lane.CITY_DRIVING
+    LANE_BOUNDARY_LEFT = map_lane_pb2.LaneBoundaryType.SOLID_YELLOW
+    LANE_BOUNDARY_RIGHT = map_lane_pb2.LaneBoundaryType.CURB
+    HEADING = 0
+    WIDTH = 3.98
+    SECTION_ID = "1"
+
+    road_dict = {}
+    lane_dict = {}
+    junction_dict = {}
+    overlap_dict = {}
+    ID = 1
+    all_lanes = contours['lanes']
+    for lntype in all_lanes:
+        for lane in all_lanes[lntype]:
+            # Create basic road object
+            road_dict[str(ID)] = Road(str(ID), map)
+            # Create basic lane object
+            lane_ID = str(ID) + '_1_-1'
+            new_lane = Lane(lane_ID, map)
+            LANE_TURN = {'straight': map_lane_pb2.Lane.NO_TURN,
+                         'left_merging': map_lane_pb2.Lane.LEFT_TURN,
+                         'left_branching': map_lane_pb2.Lane.LEFT_TURN,
+                         'right_merging': map_lane_pb2.Lane.RIGHT_TURN,
+                         'right_branching': map_lane_pb2.Lane.RIGHT_TURN}[lntype]
+            VIRTUAL = (lntype != 'straight')
+            kwargs = {
+                'speed_limit': SPEED_LIMIT,
+                'lane_turn': LANE_TURN,
+                'lane_type': LANE_TYPE,
+                'heading': HEADING,
+                'left_boundary': LANE_BOUNDARY_LEFT,
+                'right_boundary': LANE_BOUNDARY_RIGHT,
+                'virtual': VIRTUAL,
+                'width': WIDTH
+            }
+            new_lane.add(lane, **kwargs)
+            lane_dict[str(lane_ID)] = new_lane
+            ID += 1
+
+    # Create basic junction objects
+    for junction in junctions:
+        junc = Junction(str(ID), map)
+        junc.add(junction)
+        junction_dict[str(ID)] = junc
+        ID += 1
+
+    # Create overlap objects
+    potential_overlap = []
+    for l_id in lane_dict:
+        potential_overlap.append(lane_dict[l_id])
+    for j_id in junction_dict:
+        potential_overlap.append(junction_dict[j_id])
+
+    completed_roads = {}
+    for i in range(0, len(potential_overlap) - 1):
+        for j in range(i + 1, len(potential_overlap)):
+            if intersect(potential_overlap[i], potential_overlap[j]):
+                overlap_id = "overlap_{}".format(str(ID))
+                overlap = Overlap(overlap_id, map)
+                overlap.add(potential_overlap[i], potential_overlap[i + 1])
+                overlap_dict[overlap_id] = overlap
+                ID += 1
+
+                # Link junctions to roads in case the overlap is between a junction and a lane
+                if type(potential_overlap[i]) == Lane:
+                    if type(potential_overlap[j]) == Junction:
+                        road_id = potential_overlap[i].get_id().split('_')[0]
+                        j_ids = [potential_overlap[j].get_id()]
+                        l_ids = [potential_overlap[i].get_id()]
+                        road_dict[road_id].add(potential_overlap[i], SECTION_ID, j_ids, l_ids, HEADING)
+                        completed_roads[road_id] = 1
+                if type(potential_overlap[i]) == Junction:
+                    if type(potential_overlap[j]) == Lane:
+                        road_id = potential_overlap[j].get_id().split('_')[0]
+                        j_ids = [potential_overlap[i].get_id()]
+                        l_ids = [potential_overlap[j].get_id()]
+                        road_dict[road_id].add(potential_overlap[j], SECTION_ID, j_ids, l_ids, HEADING)
+                        completed_roads[road_id] = 1
+
+    # Associate lanes to the roads not treated yet
+    for road_id in road_dict:
+        if road_id not in completed_roads:
+            print(road_id)
+            lane_id = road_id + "_1_-1"
+            j_ids = []
+            l_ids = [lane_id]
+            road_dict[road_id].add(lane_dict[lane_id], SECTION_ID, j_ids, l_ids, HEADING)
+
+    # Write base map to file
+    map_file = open('base_map.txt', 'w')
+    map_file.write(str(map))
+    map_file.close()

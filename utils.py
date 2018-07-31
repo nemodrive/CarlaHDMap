@@ -1,9 +1,8 @@
 import cv2
-import pandas as pd
-import numpy as np
 import math
-import pickle as pkl
-from collections import OrderedDict
+import numpy as np
+import pandas as pd
+from shapely.geometry import Polygon
 
 
 WHITE = [255, 255, 255]
@@ -698,3 +697,9 @@ def split_at_junctions(old_lanes, junctions):
         lanes.append(new_lane)
 
     return lanes
+
+# Overlap related functions
+def intersect(obj1, obj2):
+    poly1 = Polygon(obj1.get_polygon())
+    poly2 = Polygon(obj2.get_polygon())
+    return poly1.intersects(poly2)
