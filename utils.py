@@ -679,24 +679,45 @@ def split_at_junctions(old_lanes, junctions):
                     in_junction = True
                     break
             if in_junction:
+                new_lane.append(point)
                 if not last_in_junction:
                     if new_lane:
                         lanes.append(np.array(new_lane))
                     new_lane = [point]
-                else:
-                    new_lane.append(point)
                 last_in_junction = True
             else:
+                if neighbours(point, lane[i - 1]):
+                    new_lane.append(point)
                 if last_in_junction or not neighbours(point, lane[i - 1]):
                     if new_lane:
                         lanes.append(np.array(new_lane))
                     new_lane = [point]
-                else:
-                    new_lane.append(point)
                 last_in_junction = False
+
+        # Add the final lane
+        if split_ind != -1:
+            new_lane.append(lane[0])
         lanes.append(new_lane)
 
     return lanes
+
+
+def stick_lanes(lanes, slanes):
+    global FILTER_FACTOR
+    OLD_FILTER_FACTOR = FILTER_FACTOR
+    FILTER_FACTOR *= 4
+
+    for i in range(len(lanes)):
+        # Stick to previous straight lane
+        for slane in slanes:
+            if neighbours(lanes[i][0], slane[-1]):
+                lanes[i] = np.append([slane[-1]], lanes[i], axis=0)
+        # Stick to next straight lane
+        for slane in slanes:
+            if neighbours(lanes[i][-1], slane[0]):
+                lanes[i] = np.append(lanes[i], [slane[0]], axis=0)
+    FILTER_FACTOR = OLD_FILTER_FACTOR
+
 
 # Overlap related functions
 def intersect(obj1, obj2):
