@@ -10,7 +10,7 @@ LANES_SEPARATED = True
 CROPPED_LANE_SEPARATORS_FILE = 'cropped_lane_separators.pkl'
 CONTOURS_GENERATED = True
 CONTOURS_FILE = 'contours.pkl'
-RAW_DATA_GENERATED = True
+RAW_DATA_GENERATED = False
 RAW_DATA_FILE = 'raw_data.pkl'
 
 
@@ -97,15 +97,29 @@ if __name__ == '__main__':
         # Split straight lanes at junctions
         contours['lanes']['straight'] = split_at_junctions(contours['lanes']['straight'], junctions)
 
-        # Convert lane points from pixel coordinates to Carla coordinates
+        # Stick lanes in junctions to straight lanes
+        stick_lanes(contours['lanes']['left_merging'], contours['lanes']['straight'])
+        stick_lanes(contours['lanes']['left_branching'], contours['lanes']['straight'])
+        stick_lanes(contours['lanes']['right_merging'], contours['lanes']['straight'])
+        stick_lanes(contours['lanes']['right_branching'], contours['lanes']['straight'])
+
+        # Negate y coordinate
         for lntype in contours['lanes']:
             for i in range(len(contours['lanes'][lntype])):
-                contours['lanes'][lntype][i] = list(map(pixel_to_coord, contours['lanes'][lntype][i]))
+                contours['lanes'][lntype][i] = list(map(lambda x: np.array([x[0], -x[1]]), contours['lanes'][lntype][i]))
 
         # Convert junction polygons from pixel coordinates to Carla coordinates
         for i in range(len(junctions)):
-            junctions[i] = list(map(pixel_to_coord, junctions[i]))
+            junctions[i] = list(map(lambda x: np.array([x[0], -x[1]]), junctions[i]))
 
+        # Convert lane points from pixel coordinates to Carla coordinates
+        # for lntype in contours['lanes']:
+        #     for i in range(len(contours['lanes'][lntype])):
+        #         contours['lanes'][lntype][i] = list(map(pixel_to_coord, contours['lanes'][lntype][i]))
+        #
+        # # Convert junction polygons from pixel coordinates to Carla coordinates
+        # for i in range(len(junctions)):
+        #     junctions[i] = list(map(pixel_to_coord, junctions[i]))
 
         # Save raw data
         pkl.dump((contours, junctions), open(RAW_DATA_FILE, 'wb'))
@@ -198,7 +212,6 @@ if __name__ == '__main__':
     # Associate lanes to the roads not treated yet
     for road_id in road_dict:
         if road_id not in completed_roads:
-            print(road_id)
             lane_id = road_id + "_1_-1"
             j_ids = []
             l_ids = [lane_id]
