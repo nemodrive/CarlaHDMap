@@ -122,8 +122,7 @@ class Lane(RoadObject):
         self.lane.right_neighbor_reverse_lane_id.add().id = str(id)
 
     def lane_sampling(self, points, width, left_boundary, right_boundary, central_curve):
-        path = LineString(points)
-        length = int(path.length)
+        length = len(points)
         self.left_poly = []
         self.right_poly = []
 
@@ -134,33 +133,21 @@ class Lane(RoadObject):
         lx, ly = (left_boundary.start_position.x, central_curve.start_position.y)
         r_dist = 0
         rx, ry = (right_boundary.start_position.x, central_curve.start_position.y)
-        
-        # sample more often when angle changes(considered only horizontal and vertical lines)
-        p = path.interpolate(1)
-        prev_x = p.x
-        prev_y = p.y
-        
-        for i in range(length - 1):
-            if i > 0:
-                p = path.interpolate(i - 1)
-                p2 = path.interpolate(i - 1 + 0.5)
-            else:
-                p = path.interpolate(i)
-                p2 = path.interpolate(i + 0.5)
-            distance = width / 2.0
-            lp, rp = self.convert(p, p2, distance)
 
-            if((prev_x == p.x || prev_y == p.y) && i % 10 != 0)
-                continue
-            if(prev.x != p.x && prev.y == p.y && i % 3 != 0)
-                continue            
-            prev_x = p.x
-            prev_y = p.y
-            
+        for i in range(length):
             left_bound_point = left_boundary.line_segment.point.add()
             right_bound_point = right_boundary.line_segment.point.add()
             central_point = central_curve.line_segment.point.add()
-            
+
+            if i < length - 1:
+                p = Point(points[i])
+                p2 = Point(points[i + 1])
+            else:
+                p = Point(points[i - 1])
+                p2 = Point(points[i])
+            distance = width / 2.0
+            lp, rp = self.convert(p, p2, distance, use_first=(i != length - 1))
+
             left_bound_point.x = lp[0]
             left_bound_point.y = lp[1]
             l_dist += math.sqrt(math.pow(lp[0] - lx, 2) + math.pow(lp[1] - ly, 2))
@@ -173,21 +160,33 @@ class Lane(RoadObject):
             rx = rp[0]
             ry = rp[1]
 
-            central_point.x = p.x
-            central_point.y = p.y
-            c_dist += math.sqrt(math.pow(p.x - cx, 2) + math.pow(p.y - cy, 2))
-            cx = p.x
-            cy = p.y
+            if i < length - 1:
+                central_point.x = p.x
+                central_point.y = p.y
+            else:
+                central_point.x = p2.x
+                central_point.y = p2.y
+            c_dist += math.sqrt(math.pow(central_point.x - cx, 2) + math.pow(central_point.y - cy, 2))
+            cx = central_point.x
+            cy = central_point.y
 
-            self.left_poly.append(np.array(lp))
-            self.right_poly.append(np.array(rp))
+            if i < length - 1:
+                self.left_poly.append(np.array(lp))
+                self.right_poly.append(np.array(rp))
+
+            # Get distance from lane start
+            if i > 0:
+                line = LineString(points[:i + 1])
+                dist = line.length
+            else:
+                dist = 0
 
             left_sample = self.lane.left_sample.add()
-            left_sample.s = i + 1
+            left_sample.s = dist
             left_sample.width = width / 2.0
 
             right_sample = self.lane.right_sample.add()
-            right_sample.s = i + 1
+            right_sample.s = dist
             right_sample.width = width / 2.0
 
         central_curve.length = c_dist
@@ -196,20 +195,25 @@ class Lane(RoadObject):
 
         self._polygon = np.array(self.left_poly + list(reversed(self.right_poly)))
 
-    def convert(self, p, p2, distance):
+    def convert(self, p, p2, distance, use_first=True):
         delta_y = p2.y - p.y
         delta_x = p2.x - p.x
+
+        if use_first:
+            point = p
+        else:
+            point = p2
 
         left_angle = math.atan2(delta_y, delta_x) + math.pi / 2.0
         right_angle = math.atan2(delta_y, delta_x) - math.pi / 2.0
 
         lp = []
-        lp.append(p.x + (math.cos(left_angle) * distance))
-        lp.append(p.y + (math.sin(left_angle) * distance))
+        lp.append(point.x + (math.cos(left_angle) * distance))
+        lp.append(point.y + (math.sin(left_angle) * distance))
 
         rp = []
-        rp.append(p.x + (math.cos(right_angle) * distance))
-        rp.append(p.y + (math.sin(right_angle) * distance))
+        rp.append(point.x + (math.cos(right_angle) * distance))
+        rp.append(point.y + (math.sin(right_angle) * distance))
         return lp, rp
 
     def add(self, points, **kwargs):
@@ -258,15 +262,8 @@ class Road(RoadObject):
         segment.start_position.x, segment.start_position.y = points[0]
         segment.heading = heading
         length = 0
-        step = 0
         prevX, prevY = points[0]
         for point in points[1:]:
-            step++ 
-            x, y = point
-            if((prev_x == x || prev_y == y) && step % 10 != 0)
-                continue
-            if(prev.x != x && prev.y == y && step % 3 != 0)
-                continue    
             p = segment.line_segment.point.add()
             p.x, p.y = point
             length += math.sqrt(math.pow(p.x - prevX, 2) + math.pow(p.y - prevY, 2))
