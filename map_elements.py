@@ -135,6 +135,13 @@ class Lane(RoadObject):
         rx, ry = (right_boundary.start_position.x, central_curve.start_position.y)
 
         for i in range(length):
+            if i > 1:
+                p = Point(points[i-1])
+                p2 = Point(points[i])
+                if((p.x == p2.x || p.y == p2.y) && i != length && i % 10 != 0):
+                    continue
+                elif(i % 3 != 0 && i != length):
+                    continue
             left_bound_point = left_boundary.line_segment.point.add()
             right_bound_point = right_boundary.line_segment.point.add()
             central_point = central_curve.line_segment.point.add()
