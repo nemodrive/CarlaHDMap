@@ -56,6 +56,9 @@ class Lane(RoadObject):
     def set_turn(self, turn):
         self.lane.turn = turn
 
+    def set_direction(self, direction):
+        self.lane.direction = direction
+
     def add_left_lane_boundary(self, virtual, x, y, heading, type):  # removed s
         # boundary type params
         boundary_type = self.lane.left_boundary.boundary_type.add()
@@ -121,7 +124,7 @@ class Lane(RoadObject):
     def add_right_reverse_neighbor(self, id):
         self.lane.right_neighbor_reverse_lane_id.add().id = str(id)
 
-    def lane_sampling(self, points, width, left_boundary, right_boundary, central_curve):
+    def lane_sampling(self, points, width, left_boundary, right_boundary, central_curve, do_sampling=False):
         length = len(points)
         self.left_poly = []
         self.right_poly = []
@@ -138,10 +141,11 @@ class Lane(RoadObject):
             if i > 1:
                 p = Point(points[i-1])
                 p2 = Point(points[i])
-                if((p.x == p2.x || p.y == p2.y) && i != length && i % 10 != 0):
-                    continue
-                elif(i % 3 != 0 && i != length):
-                    continue
+                if do_sampling:
+                    if (p.x == p2.x or p.y == p2.y) and i != length - 1 and i % 10 != 0:
+                        continue
+                    elif i % 3 != 0 and i != length - 1:
+                        continue
             left_bound_point = left_boundary.line_segment.point.add()
             right_bound_point = right_boundary.line_segment.point.add()
             central_point = central_curve.line_segment.point.add()
@@ -223,11 +227,12 @@ class Lane(RoadObject):
         rp.append(point.y + (math.sin(right_angle) * distance))
         return lp, rp
 
-    def add(self, points, **kwargs):
+    def add(self, points, junctions, **kwargs):
         self.set_length(points)
         self.set_speed_limit(kwargs['speed_limit'])
         self.set_turn(kwargs['lane_turn'])
         self.set_type(kwargs['lane_type'])
+        self.set_direction(kwargs['direction'])
 
         path = LineString(points)
         p = path.interpolate(0)
@@ -238,7 +243,7 @@ class Lane(RoadObject):
         central_curve = self.add_central_curve(points[0][0], points[0][1], kwargs['heading'])
         left_boundary = self.add_left_lane_boundary(kwargs['virtual'], lp[0], lp[1], kwargs['heading'], kwargs['left_boundary'])
         right_boundary = self.add_right_lane_boundary(kwargs['virtual'], rp[0], rp[1], kwargs['heading'], kwargs['right_boundary'])
-        self.lane_sampling(points, kwargs['width'], left_boundary, right_boundary, central_curve)
+        self.lane_sampling(points, kwargs['width'], left_boundary, right_boundary, central_curve, kwargs['do_sampling'])
 
 
 class Road(RoadObject):
@@ -308,7 +313,7 @@ class Overlap(RoadObject):
             object.junction_overlap_info.SetInParent()
 
     def _complete_info(self, info, lane, other):
-        # Find end points of overlap
+        # Find end points of the overlap
         polygon = Polygon(other.get_polygon())
         central_curve = lane.lane.central_curve.segment[0].line_segment.point
         length = 0
@@ -323,7 +328,7 @@ class Overlap(RoadObject):
             i += 1
         if i < len(central_curve):
             start_s = length
-            while Point(prev_point).within(polygon) >= 0 and i < len(central_curve):
+            while Point(prev_point).within(polygon) and i < len(central_curve):
                 curr_point = np.array([central_curve[i].x, central_curve[i].y])
                 length += distance(prev_point, curr_point)
                 prev_point = curr_point
@@ -352,7 +357,6 @@ class Overlap(RoadObject):
             info.is_merge = True
         else:
             info.is_merge = False
-
 
     def add(self, obj1, obj2):
         # Add the overlapping objects
@@ -397,5 +401,3 @@ class Junction(RoadObject):
         for vertex in junc_poly:
             point = self.junction.polygon.point.add()
             point.x, point.y = vertex
-
-

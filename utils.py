@@ -631,6 +631,7 @@ def detect_junctions(map_img):
                     max_len = dist
                     max_ind = i
                     max_nei_ind = nei
+
         # Extend points to the road edge
         dir = 1
         if junction[max_ind][0] == junction[max_nei_ind][0]:
@@ -705,7 +706,7 @@ def split_at_junctions(old_lanes, junctions):
 def stick_lanes(lanes, slanes):
     global FILTER_FACTOR
     OLD_FILTER_FACTOR = FILTER_FACTOR
-    FILTER_FACTOR *= 4
+    FILTER_FACTOR *= 5
 
     for i in range(len(lanes)):
         # Stick to previous straight lane
