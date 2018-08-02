@@ -2,8 +2,11 @@ import sys
 import numpy as np
 from modules.map.proto import map_pb2
 from modules.map.proto import map_lane_pb2
-from modules.map.proto import map_road_pb2
 from modules.map.proto import map_stop_sign_pb2
+from modules.map.proto import map_speed_bump_pb2
+from modules.map.proto import map_crosswalk_pb2
+from modules.map.proto import map_parking_space_pb2
+from modules.map.proto import map_signal_pb2
 from shapely.geometry import LineString, Point
 import math
 
@@ -68,7 +71,7 @@ class SpeedBump:
     def __init__(self, id, map):
         self.speed_bump = map.speed_bump.add()
         self.speed_bump.id.id = str(id)
-        self._id = str(id)
+        self._id = id
         
     def add(self, points, heading, overlap_ids):
         for id in overlap_ids:
@@ -95,3 +98,75 @@ class SpeedBump:
 #testing speed_bump
 sb = SpeedBump(1, map)
 sb.add(points2D, 1, [1,2,3])
+
+class ParkingSpace:
+    def __init__(self, id, map):
+        self.parking_space = map.parking_space.add()
+        self.parking_space.id.id = str(id)
+        self._id = id
+        
+    def add(self, overlap_ids, heading, points):
+        for id in overlap_ids:
+            self.parking_space.overlap_id.add().id = str(id)
+        
+        for point in points:
+            p = self.parking_space.polygon.point.add()
+            p = point
+        
+        self.parking_space.heading = heading
+
+#testing parking_space
+ps = ParkingSpace(1, map)
+ps.add([1,2,3], 0, points2D)
+
+class Signal:
+    def __init__(self, id, map):
+        self.signal = map.signal.add()
+        self.signal.id.id = str(id)
+        self._id = id
+        
+    def add(self, point, subsignal_nr, types, overlap_ids, type, points, heading):
+        p = self.signal.boundary.point.add()
+        p.x = point[0]
+        p.y = point[1]
+        
+        subsignal = []
+        for i in range(subsignal_nr):
+            s = self.signal.subsignal.add()
+            subsignal.append(s)
+            subsignal[i].id.id = str(i)
+            subsignal[i].type = types[i]
+            
+        for i in overlap_ids:
+            self.signal.overlap_id.add().id = str(i)
+            
+        self.signal.type = type
+        stop_line = self.signal.stop_line.add()
+        
+        segment = stop_line.segment.add()
+        segment.start_position.x = points[0][0]
+        segment.start_position.y = points[0][1]
+        prevX, prevY = points[0]
+        length = 0
+        for point in points:
+            p = segment.line_segment.point.add()
+            p.x, p.y = point
+            length += math.sqrt(math.pow(p.x - prevX, 2) + math.pow(p.y - prevY, 2))
+            prevX = p.x
+            prevY = p.y
+        segment.length = length
+        segment.heading = heading
+        
+#testing signal
+s = Signal(1, map)
+point = [0,0]
+types = [map_signal_pb2.Subsignal.CIRCLE, map_signal_pb2.Subsignal.CIRCLE, map_signal_pb2.Subsignal.CIRCLE]
+type = map_signal_pb2.Signal.MIX_2_HORIZONTAL
+heading  = 0
+s.add(point, 3, types, [1,2,3],  type, points2D, heading)
+
+
+
+
+
+
