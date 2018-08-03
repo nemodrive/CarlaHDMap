@@ -6,7 +6,7 @@ from modules.map.proto import map_pb2
 from modules.map.proto import map_lane_pb2
 
 
-TOWN = "Town01"
+TOWN = "Town02"
 
 LANES_SEPARATED = True
 CROPPED_LANE_SEPARATORS_FILE = 'cropped_lane_separators.pkl'
@@ -14,17 +14,19 @@ CONTOURS_GENERATED = True
 CONTOURS_FILE = 'contours.pkl'
 RAW_DATA_GENERATED = False
 RAW_DATA_FILE = 'raw_data.pkl'
+FILTER_MAP_POINTS = True
 
 # Constant values
+SOLID_YELLOW = map_lane_pb2.LaneBoundaryType.SOLID_YELLOW
+CURB = map_lane_pb2.LaneBoundaryType.CURB
+DOTTED_WHITE = map_lane_pb2.LaneBoundaryType.DOTTED_WHITE
+
 SPEED_LIMIT = 60
 LANE_TYPE = map_lane_pb2.Lane.CITY_DRIVING
-LANE_BOUNDARY_LEFT = map_lane_pb2.LaneBoundaryType.SOLID_YELLOW
-LANE_BOUNDARY_RIGHT = map_lane_pb2.LaneBoundaryType.CURB
 HEADING = 0
 WIDTH = 3.98
 DIRECTION = map_lane_pb2.Lane.FORWARD
 SECTION_ID = "1"
-FILTER_MAP_POINTS = True
 
 
 def get_points(map_img, lane_map_img):
@@ -115,12 +117,6 @@ if __name__ == '__main__':
         stick_lanes(contours['lanes']['right_merging'], contours['lanes']['straight'])
         stick_lanes(contours['lanes']['right_branching'], contours['lanes']['straight'])
 
-        all_contours = []
-        for lntype in contours['lanes']:
-            all_contours += contours['lanes'][lntype]
-        for lane in all_contours:
-            print(lane[0], lane[1], lane[-1])
-
         # Negate y coordinate
         for lntype in contours['lanes']:
             for i in range(len(contours['lanes'][lntype])):
@@ -161,15 +157,12 @@ if __name__ == '__main__':
                          'left_branching': map_lane_pb2.Lane.LEFT_TURN,
                          'right_merging': map_lane_pb2.Lane.RIGHT_TURN,
                          'right_branching': map_lane_pb2.Lane.RIGHT_TURN}[lntype]
-            VIRTUAL = (lntype != 'straight')
+
             kwargs = {
                 'speed_limit': SPEED_LIMIT,
                 'lane_turn': LANE_TURN,
                 'lane_type': LANE_TYPE,
                 'heading': HEADING,
-                'left_boundary': LANE_BOUNDARY_LEFT,
-                'right_boundary': LANE_BOUNDARY_RIGHT,
-                'virtual': VIRTUAL,
                 'width': WIDTH,
                 'direction': DIRECTION,
                 'do_sampling': FILTER_MAP_POINTS
@@ -224,9 +217,11 @@ if __name__ == '__main__':
                 overlap_dict[overlap_id] = overlap
                 ID += 1
 
-        # Check overlap with a junction
+        # Check overlap with a junction and set lane boundaries types accordingly
+        in_junction = False
         for junction in junctions:
             if intersect(lanes[i], junction):
+                in_junction = True
                 overlap_id = "overlap_{}".format(str(ID))
                 overlap = Overlap(overlap_id, map)
                 overlap.add(lanes[i], junction)
@@ -238,6 +233,15 @@ if __name__ == '__main__':
                 l_ids = [lanes[i].get_id()]
                 road_dict[road_id].add(lanes[i], SECTION_ID, j_ids, l_ids, HEADING)
                 completed_roads[road_id] = 1
+                break
+        # Set lane boundary types
+        if in_junction:
+            lanes[i].set_left_lane_boundary_type(DOTTED_WHITE, True)
+            lanes[i].set_right_lane_boundary_type(DOTTED_WHITE, True)
+        else:
+            lanes[i].set_left_lane_boundary_type(SOLID_YELLOW, False)
+            lanes[i].set_right_lane_boundary_type(CURB, False)
+
 
     # Associate lanes to the roads not treated yet
     for road_id in road_dict:

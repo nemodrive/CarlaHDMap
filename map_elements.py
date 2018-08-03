@@ -59,12 +59,19 @@ class Lane(RoadObject):
     def set_direction(self, direction):
         self.lane.direction = direction
 
-    def add_left_lane_boundary(self, virtual, x, y, heading, type):  # removed s
+    def set_left_lane_boundary_type(self, type, virtual):
         # boundary type params
         boundary_type = self.lane.left_boundary.boundary_type.add()
         boundary_type.types.append(type)
         self.lane.left_boundary.virtual = virtual  # bool
 
+    def set_right_lane_boundary_type(self, type, virtual):
+        # boundary type params
+        boundary_type = self.lane.right_boundary.boundary_type.add()
+        boundary_type.types.append(type)
+        self.lane.right_boundary.virtual = virtual  # bool
+
+    def add_left_lane_boundary(self, x, y, heading):  # removed s
         # curve segment params
         left_boundary = self.lane.left_boundary.curve.segment.add()
         left_boundary.heading = heading
@@ -72,12 +79,7 @@ class Lane(RoadObject):
         left_boundary.start_position.y = y
         return left_boundary
 
-    def add_right_lane_boundary(self, virtual, x, y, heading, type):  # removed s
-        # boundary type params
-        boundary_type = self.lane.right_boundary.boundary_type.add()
-        boundary_type.types.append(type)
-        self.lane.right_boundary.virtual = virtual  # bool
-
+    def add_right_lane_boundary(self, x, y, heading):  # removed s
         # curve segment params
         right_boundary = self.lane.right_boundary.curve.segment.add()
         right_boundary.heading = heading
@@ -241,8 +243,8 @@ class Lane(RoadObject):
         lp, rp = self.convert(p, p2, distance)
 
         central_curve = self.add_central_curve(points[0][0], points[0][1], kwargs['heading'])
-        left_boundary = self.add_left_lane_boundary(kwargs['virtual'], lp[0], lp[1], kwargs['heading'], kwargs['left_boundary'])
-        right_boundary = self.add_right_lane_boundary(kwargs['virtual'], rp[0], rp[1], kwargs['heading'], kwargs['right_boundary'])
+        left_boundary = self.add_left_lane_boundary(lp[0], lp[1], kwargs['heading'])
+        right_boundary = self.add_right_lane_boundary(rp[0], rp[1], kwargs['heading'])
         self.lane_sampling(points, kwargs['width'], left_boundary, right_boundary, central_curve, kwargs['do_sampling'])
 
 

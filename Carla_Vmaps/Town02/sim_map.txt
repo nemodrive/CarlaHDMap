@@ -451,9 +451,9 @@ lane {
         length: 18.730199999999996
       }
     }
-    virtual: false
+    virtual: true
     boundary_type {
-      types: SOLID_YELLOW
+      types: DOTTED_WHITE
     }
   }
   right_boundary {
@@ -485,9 +485,9 @@ lane {
         length: 18.730199999999996
       }
     }
-    virtual: false
+    virtual: true
     boundary_type {
-      types: CURB
+      types: DOTTED_WHITE
     }
   }
   length: 18.730199999999996
@@ -1646,9 +1646,9 @@ lane {
         length: 18.73020000000001
       }
     }
-    virtual: false
+    virtual: true
     boundary_type {
-      types: SOLID_YELLOW
+      types: DOTTED_WHITE
     }
   }
   right_boundary {
@@ -1680,9 +1680,9 @@ lane {
         length: 18.73020000000001
       }
     }
-    virtual: false
+    virtual: true
     boundary_type {
-      types: CURB
+      types: DOTTED_WHITE
     }
   }
   length: 18.73020000000001
@@ -2004,9 +2004,9 @@ lane {
         length: 18.730200000000025
       }
     }
-    virtual: false
+    virtual: true
     boundary_type {
-      types: SOLID_YELLOW
+      types: DOTTED_WHITE
     }
   }
   right_boundary {
@@ -2038,9 +2038,9 @@ lane {
         length: 18.730200000000025
       }
     }
-    virtual: false
+    virtual: true
     boundary_type {
-      types: CURB
+      types: DOTTED_WHITE
     }
   }
   length: 18.730200000000025
@@ -2779,9 +2779,9 @@ lane {
         length: 20.88449999999999
       }
     }
-    virtual: false
+    virtual: true
     boundary_type {
-      types: SOLID_YELLOW
+      types: DOTTED_WHITE
     }
   }
   right_boundary {
@@ -2813,9 +2813,9 @@ lane {
         length: 20.88449999999999
       }
     }
-    virtual: false
+    virtual: true
     boundary_type {
-      types: CURB
+      types: DOTTED_WHITE
     }
   }
   length: 18.894499999999994
@@ -3468,9 +3468,9 @@ lane {
         length: 20.720200000000013
       }
     }
-    virtual: false
+    virtual: true
     boundary_type {
-      types: SOLID_YELLOW
+      types: DOTTED_WHITE
     }
   }
   right_boundary {
@@ -3502,9 +3502,9 @@ lane {
         length: 20.720200000000013
       }
     }
-    virtual: false
+    virtual: true
     boundary_type {
-      types: CURB
+      types: DOTTED_WHITE
     }
   }
   length: 18.73020000000001
@@ -4084,9 +4084,9 @@ lane {
         length: 18.894499999999994
       }
     }
-    virtual: false
+    virtual: true
     boundary_type {
-      types: SOLID_YELLOW
+      types: DOTTED_WHITE
     }
   }
   right_boundary {
@@ -4118,9 +4118,9 @@ lane {
         length: 18.894499999999994
       }
     }
-    virtual: false
+    virtual: true
     boundary_type {
-      types: CURB
+      types: DOTTED_WHITE
     }
   }
   length: 18.894499999999994
@@ -4652,9 +4652,9 @@ lane {
         length: 20.88450000000001
       }
     }
-    virtual: false
+    virtual: true
     boundary_type {
-      types: SOLID_YELLOW
+      types: DOTTED_WHITE
     }
   }
   right_boundary {
@@ -4686,9 +4686,9 @@ lane {
         length: 20.88450000000001
       }
     }
-    virtual: false
+    virtual: true
     boundary_type {
-      types: CURB
+      types: DOTTED_WHITE
     }
   }
   length: 18.894500000000008
@@ -5666,9 +5666,9 @@ lane {
         length: 18.730200000000025
       }
     }
-    virtual: false
+    virtual: true
     boundary_type {
-      types: SOLID_YELLOW
+      types: DOTTED_WHITE
     }
   }
   right_boundary {
@@ -5700,9 +5700,9 @@ lane {
         length: 18.730200000000025
       }
     }
-    virtual: false
+    virtual: true
     boundary_type {
-      types: CURB
+      types: DOTTED_WHITE
     }
   }
   length: 18.730200000000025
@@ -6225,9 +6225,9 @@ lane {
         length: 20.88450000000001
       }
     }
-    virtual: false
+    virtual: true
     boundary_type {
-      types: SOLID_YELLOW
+      types: DOTTED_WHITE
     }
   }
   right_boundary {
@@ -6259,9 +6259,9 @@ lane {
         length: 20.88450000000001
       }
     }
-    virtual: false
+    virtual: true
     boundary_type {
-      types: CURB
+      types: DOTTED_WHITE
     }
   }
   length: 18.894500000000008
@@ -6651,9 +6651,9 @@ lane {
         length: 21.048800000000035
       }
     }
-    virtual: false
+    virtual: true
     boundary_type {
-      types: SOLID_YELLOW
+      types: DOTTED_WHITE
     }
   }
   right_boundary {
@@ -6685,9 +6685,9 @@ lane {
         length: 21.048800000000035
       }
     }
-    virtual: false
+    virtual: true
     boundary_type {
-      types: CURB
+      types: DOTTED_WHITE
     }
   }
   length: 19.058800000000033
@@ -7193,9 +7193,9 @@ lane {
         length: 20.720200000000013
       }
     }
-    virtual: false
+    virtual: true
     boundary_type {
-      types: SOLID_YELLOW
+      types: DOTTED_WHITE
     }
   }
   right_boundary {
@@ -7227,9 +7227,9 @@ lane {
         length: 20.720200000000013
       }
     }
-    virtual: false
+    virtual: true
     boundary_type {
-      types: CURB
+      types: DOTTED_WHITE
     }
   }
   length: 18.73020000000001
@@ -7616,9 +7616,9 @@ lane {
         length: 20.7202
       }
     }
-    virtual: false
+    virtual: true
     boundary_type {
-      types: SOLID_YELLOW
+      types: DOTTED_WHITE
     }
   }
   right_boundary {
@@ -7650,9 +7650,9 @@ lane {
         length: 20.7202
       }
     }
-    virtual: false
+    virtual: true
     boundary_type {
-      types: CURB
+      types: DOTTED_WHITE
     }
   }
   length: 18.730199999999996
@@ -8152,9 +8152,9 @@ lane {
         length: 18.73020000000001
       }
     }
-    virtual: false
+    virtual: true
     boundary_type {
-      types: SOLID_YELLOW
+      types: DOTTED_WHITE
     }
   }
   right_boundary {
@@ -8186,9 +8186,9 @@ lane {
         length: 18.73020000000001
       }
     }
-    virtual: false
+    virtual: true
     boundary_type {
-      types: CURB
+      types: DOTTED_WHITE
     }
   }
   length: 18.73020000000001
@@ -8915,9 +8915,9 @@ lane {
         length: 20.72019999999999
       }
     }
-    virtual: false
+    virtual: true
     boundary_type {
-      types: SOLID_YELLOW
+      types: DOTTED_WHITE
     }
   }
   right_boundary {
@@ -8949,9 +8949,9 @@ lane {
         length: 20.72019999999999
       }
     }
-    virtual: false
+    virtual: true
     boundary_type {
-      types: CURB
+      types: DOTTED_WHITE
     }
   }
   length: 18.730199999999996
@@ -9761,9 +9761,9 @@ lane {
         length: 18.730199999999996
       }
     }
-    virtual: false
+    virtual: true
     boundary_type {
-      types: SOLID_YELLOW
+      types: DOTTED_WHITE
     }
   }
   right_boundary {
@@ -9795,9 +9795,9 @@ lane {
         length: 18.730199999999996
       }
     }
-    virtual: false
+    virtual: true
     boundary_type {
-      types: CURB
+      types: DOTTED_WHITE
     }
   }
   length: 18.730199999999996
@@ -10113,9 +10113,9 @@ lane {
         length: 18.730199999999996
       }
     }
-    virtual: false
+    virtual: true
     boundary_type {
-      types: SOLID_YELLOW
+      types: DOTTED_WHITE
     }
   }
   right_boundary {
@@ -10147,9 +10147,9 @@ lane {
         length: 18.730199999999996
       }
     }
-    virtual: false
+    virtual: true
     boundary_type {
-      types: CURB
+      types: DOTTED_WHITE
     }
   }
   length: 18.730199999999996
@@ -11452,7 +11452,7 @@ lane {
     }
     virtual: true
     boundary_type {
-      types: SOLID_YELLOW
+      types: DOTTED_WHITE
     }
   }
   right_boundary {
@@ -11530,7 +11530,7 @@ lane {
     }
     virtual: true
     boundary_type {
-      types: CURB
+      types: DOTTED_WHITE
     }
   }
   length: 17.874422248100483
@@ -11842,7 +11842,7 @@ lane {
     }
     virtual: true
     boundary_type {
-      types: SOLID_YELLOW
+      types: DOTTED_WHITE
     }
   }
   right_boundary {
@@ -11924,7 +11924,7 @@ lane {
     }
     virtual: true
     boundary_type {
-      types: CURB
+      types: DOTTED_WHITE
     }
   }
   length: 17.217879646639563
@@ -12228,7 +12228,7 @@ lane {
     }
     virtual: true
     boundary_type {
-      types: SOLID_YELLOW
+      types: DOTTED_WHITE
     }
   }
   right_boundary {
@@ -12302,7 +12302,7 @@ lane {
     }
     virtual: true
     boundary_type {
-      types: CURB
+      types: DOTTED_WHITE
     }
   }
   length: 18.619877514532593
@@ -12603,7 +12603,7 @@ lane {
     }
     virtual: true
     boundary_type {
-      types: SOLID_YELLOW
+      types: DOTTED_WHITE
     }
   }
   right_boundary {
@@ -12685,7 +12685,7 @@ lane {
     }
     virtual: true
     boundary_type {
-      types: CURB
+      types: DOTTED_WHITE
     }
   }
   length: 17.934040783480327
@@ -13002,7 +13002,7 @@ lane {
     }
     virtual: true
     boundary_type {
-      types: SOLID_YELLOW
+      types: DOTTED_WHITE
     }
   }
   right_boundary {
@@ -13084,7 +13084,7 @@ lane {
     }
     virtual: true
     boundary_type {
-      types: CURB
+      types: DOTTED_WHITE
     }
   }
   length: 17.16042090364067
@@ -13415,7 +13415,7 @@ lane {
     }
     virtual: true
     boundary_type {
-      types: SOLID_YELLOW
+      types: DOTTED_WHITE
     }
   }
   right_boundary {
@@ -13501,7 +13501,7 @@ lane {
     }
     virtual: true
     boundary_type {
-      types: CURB
+      types: DOTTED_WHITE
     }
   }
   length: 17.585688112994184
@@ -13845,7 +13845,7 @@ lane {
     }
     virtual: true
     boundary_type {
-      types: SOLID_YELLOW
+      types: DOTTED_WHITE
     }
   }
   right_boundary {
@@ -13935,7 +13935,7 @@ lane {
     }
     virtual: true
     boundary_type {
-      types: CURB
+      types: DOTTED_WHITE
     }
   }
   length: 18.600237903927873
@@ -14276,7 +14276,7 @@ lane {
     }
     virtual: true
     boundary_type {
-      types: SOLID_YELLOW
+      types: DOTTED_WHITE
     }
   }
   right_boundary {
@@ -14362,7 +14362,7 @@ lane {
     }
     virtual: true
     boundary_type {
-      types: CURB
+      types: DOTTED_WHITE
     }
   }
   length: 17.264014797785155
@@ -14693,7 +14693,7 @@ lane {
     }
     virtual: true
     boundary_type {
-      types: SOLID_YELLOW
+      types: DOTTED_WHITE
     }
   }
   right_boundary {
@@ -14775,7 +14775,7 @@ lane {
     }
     virtual: true
     boundary_type {
-      types: CURB
+      types: DOTTED_WHITE
     }
   }
   length: 16.917189331137536
@@ -15093,7 +15093,7 @@ lane {
     }
     virtual: true
     boundary_type {
-      types: SOLID_YELLOW
+      types: DOTTED_WHITE
     }
   }
   right_boundary {
@@ -15171,7 +15171,7 @@ lane {
     }
     virtual: true
     boundary_type {
-      types: CURB
+      types: DOTTED_WHITE
     }
   }
   length: 17.07197268202898
@@ -15494,7 +15494,7 @@ lane {
     }
     virtual: true
     boundary_type {
-      types: SOLID_YELLOW
+      types: DOTTED_WHITE
     }
   }
   right_boundary {
@@ -15580,7 +15580,7 @@ lane {
     }
     virtual: true
     boundary_type {
-      types: CURB
+      types: DOTTED_WHITE
     }
   }
   length: 17.148464723244928
@@ -15922,7 +15922,7 @@ lane {
     }
     virtual: true
     boundary_type {
-      types: SOLID_YELLOW
+      types: DOTTED_WHITE
     }
   }
   right_boundary {
@@ -16008,7 +16008,7 @@ lane {
     }
     virtual: true
     boundary_type {
-      types: CURB
+      types: DOTTED_WHITE
     }
   }
   length: 17.014513939030127
@@ -16339,7 +16339,7 @@ lane {
     }
     virtual: true
     boundary_type {
-      types: SOLID_YELLOW
+      types: DOTTED_WHITE
     }
   }
   right_boundary {
@@ -16421,7 +16421,7 @@ lane {
     }
     virtual: true
     boundary_type {
-      types: CURB
+      types: DOTTED_WHITE
     }
   }
   length: 17.600418962160738
@@ -16746,7 +16746,7 @@ lane {
     }
     virtual: true
     boundary_type {
-      types: SOLID_YELLOW
+      types: DOTTED_WHITE
     }
   }
   right_boundary {
@@ -16832,7 +16832,7 @@ lane {
     }
     virtual: true
     boundary_type {
-      types: CURB
+      types: DOTTED_WHITE
     }
   }
   length: 17.349390899567172
@@ -17168,7 +17168,7 @@ lane {
     }
     virtual: true
     boundary_type {
-      types: SOLID_YELLOW
+      types: DOTTED_WHITE
     }
   }
   right_boundary {
@@ -17254,7 +17254,7 @@ lane {
     }
     virtual: true
     boundary_type {
-      types: CURB
+      types: DOTTED_WHITE
     }
   }
   length: 17.10967875454172
@@ -17596,7 +17596,7 @@ lane {
     }
     virtual: true
     boundary_type {
-      types: SOLID_YELLOW
+      types: DOTTED_WHITE
     }
   }
   right_boundary {
@@ -17682,7 +17682,7 @@ lane {
     }
     virtual: true
     boundary_type {
-      types: CURB
+      types: DOTTED_WHITE
     }
   }
   length: 17.051140115352354
@@ -17970,7 +17970,7 @@ lane {
     }
     virtual: true
     boundary_type {
-      types: SOLID_YELLOW
+      types: DOTTED_WHITE
     }
   }
   right_boundary {
@@ -18032,7 +18032,7 @@ lane {
     }
     virtual: true
     boundary_type {
-      types: CURB
+      types: DOTTED_WHITE
     }
   }
   length: 11.2382537996302
@@ -18255,7 +18255,7 @@ lane {
     }
     virtual: true
     boundary_type {
-      types: SOLID_YELLOW
+      types: DOTTED_WHITE
     }
   }
   right_boundary {
@@ -18313,7 +18313,7 @@ lane {
     }
     virtual: true
     boundary_type {
-      types: CURB
+      types: DOTTED_WHITE
     }
   }
   length: 11.361767043285635
@@ -18544,7 +18544,7 @@ lane {
     }
     virtual: true
     boundary_type {
-      types: SOLID_YELLOW
+      types: DOTTED_WHITE
     }
   }
   right_boundary {
@@ -18610,7 +18610,7 @@ lane {
     }
     virtual: true
     boundary_type {
-      types: CURB
+      types: DOTTED_WHITE
     }
   }
   length: 11.147365157014287
@@ -18857,7 +18857,7 @@ lane {
     }
     virtual: true
     boundary_type {
-      types: SOLID_YELLOW
+      types: DOTTED_WHITE
     }
   }
   right_boundary {
@@ -18923,7 +18923,7 @@ lane {
     }
     virtual: true
     boundary_type {
-      types: CURB
+      types: DOTTED_WHITE
     }
   }
   length: 10.946438980692069
@@ -19176,7 +19176,7 @@ lane {
     }
     virtual: true
     boundary_type {
-      types: SOLID_YELLOW
+      types: DOTTED_WHITE
     }
   }
   right_boundary {
@@ -19242,7 +19242,7 @@ lane {
     }
     virtual: true
     boundary_type {
-      types: CURB
+      types: DOTTED_WHITE
     }
   }
   length: 11.169277619881424
@@ -19489,7 +19489,7 @@ lane {
     }
     virtual: true
     boundary_type {
-      types: SOLID_YELLOW
+      types: DOTTED_WHITE
     }
   }
   right_boundary {
@@ -19555,7 +19555,7 @@ lane {
     }
     virtual: true
     boundary_type {
-      types: CURB
+      types: DOTTED_WHITE
     }
   }
   length: 11.284398337695832
@@ -19794,7 +19794,7 @@ lane {
     }
     virtual: true
     boundary_type {
-      types: SOLID_YELLOW
+      types: DOTTED_WHITE
     }
   }
   right_boundary {
@@ -19856,7 +19856,7 @@ lane {
     }
     virtual: true
     boundary_type {
-      types: CURB
+      types: DOTTED_WHITE
     }
   }
   length: 11.342936976885188
@@ -20098,7 +20098,7 @@ lane {
     }
     virtual: true
     boundary_type {
-      types: SOLID_YELLOW
+      types: DOTTED_WHITE
     }
   }
   right_boundary {
@@ -20164,7 +20164,7 @@ lane {
     }
     virtual: true
     boundary_type {
-      types: CURB
+      types: DOTTED_WHITE
     }
   }
   length: 10.908732908179303
@@ -20409,7 +20409,7 @@ lane {
     }
     virtual: true
     boundary_type {
-      types: SOLID_YELLOW
+      types: DOTTED_WHITE
     }
   }
   right_boundary {
@@ -20471,7 +20471,7 @@ lane {
     }
     virtual: true
     boundary_type {
-      types: CURB
+      types: DOTTED_WHITE
     }
   }
   length: 10.793182833639111
@@ -20700,7 +20700,7 @@ lane {
     }
     virtual: true
     boundary_type {
-      types: SOLID_YELLOW
+      types: DOTTED_WHITE
     }
   }
   right_boundary {
@@ -20758,7 +20758,7 @@ lane {
     }
     virtual: true
     boundary_type {
-      types: CURB
+      types: DOTTED_WHITE
     }
   }
   length: 11.112266184530558
@@ -20981,7 +20981,7 @@ lane {
     }
     virtual: true
     boundary_type {
-      types: SOLID_YELLOW
+      types: DOTTED_WHITE
     }
   }
   right_boundary {
@@ -21043,7 +21043,7 @@ lane {
     }
     virtual: true
     boundary_type {
-      types: CURB
+      types: DOTTED_WHITE
     }
   }
   length: 10.890507441531708
@@ -21283,7 +21283,7 @@ lane {
     }
     virtual: true
     boundary_type {
-      types: SOLID_YELLOW
+      types: DOTTED_WHITE
     }
   }
   right_boundary {
@@ -21345,7 +21345,7 @@ lane {
     }
     virtual: true
     boundary_type {
-      types: CURB
+      types: DOTTED_WHITE
     }
   }
   length: 10.986752153233796
@@ -21576,7 +21576,7 @@ lane {
     }
     virtual: true
     boundary_type {
-      types: SOLID_YELLOW
+      types: DOTTED_WHITE
     }
   }
   right_boundary {
@@ -21638,7 +21638,7 @@ lane {
     }
     virtual: true
     boundary_type {
-      types: CURB
+      types: DOTTED_WHITE
     }
   }
   length: 10.928213514044453
@@ -21880,7 +21880,7 @@ lane {
     }
     virtual: true
     boundary_type {
-      types: SOLID_YELLOW
+      types: DOTTED_WHITE
     }
   }
   right_boundary {
@@ -21946,7 +21946,7 @@ lane {
     }
     virtual: true
     boundary_type {
-      types: CURB
+      types: DOTTED_WHITE
     }
   }
   length: 10.755476761126374
@@ -22186,7 +22186,7 @@ lane {
     }
     virtual: true
     boundary_type {
-      types: SOLID_YELLOW
+      types: DOTTED_WHITE
     }
   }
   right_boundary {
@@ -22244,7 +22244,7 @@ lane {
     }
     virtual: true
     boundary_type {
-      types: CURB
+      types: DOTTED_WHITE
     }
   }
   length: 11.236700319636874
@@ -22470,7 +22470,7 @@ lane {
     }
     virtual: true
     boundary_type {
-      types: SOLID_YELLOW
+      types: DOTTED_WHITE
     }
   }
   right_boundary {
@@ -22532,7 +22532,7 @@ lane {
     }
     virtual: true
     boundary_type {
-      types: CURB
+      types: DOTTED_WHITE
     }
   }
   length: 11.074560112017874
