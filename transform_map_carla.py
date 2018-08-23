@@ -1,5 +1,6 @@
 import pickle as pkl
 import os
+from misc import *
 from utils import *
 from map_elements import *
 from modules.map.proto import map_pb2
@@ -12,9 +13,9 @@ LANES_SEPARATED = True
 CROPPED_LANE_SEPARATORS_FILE = 'cropped_lane_separators.pkl'
 CONTOURS_GENERATED = True
 CONTOURS_FILE = 'contours.pkl'
-RAW_DATA_GENERATED = False
+RAW_DATA_GENERATED = True
 RAW_DATA_FILE = 'raw_data.pkl'
-FILTER_MAP_POINTS = True
+FILTER_MAP_POINTS = False
 
 # Constant values
 SOLID_YELLOW = map_lane_pb2.LaneBoundaryType.SOLID_YELLOW
@@ -120,9 +121,9 @@ if __name__ == '__main__':
         # Negate y coordinate
         for lntype in contours['lanes']:
             for i in range(len(contours['lanes'][lntype])):
-                contours['lanes'][lntype][i] = list(map(lambda x: np.array([x[0], -x[1]]), contours['lanes'][lntype][i]))
+                contours['lanes'][lntype][i] = list(map(lambda x: np.array([x[0], -x[1]-182]), contours['lanes'][lntype][i]))
         for i in range(len(junctions)):
-            junctions[i] = list(map(lambda x: np.array([x[0], -x[1]]), junctions[i]))
+            junctions[i] = list(map(lambda x: np.array([x[0], -x[1]+182]), junctions[i]))
 
         # Convert lane points from pixel coordinates to Carla coordinates
         for lntype in contours['lanes']:
@@ -190,6 +191,23 @@ if __name__ == '__main__':
             lane_dict[lane]['lane'].add_successor(succ_id)
         for pred_id in pred_ids:
             lane_dict[lane]['lane'].add_predecessor(pred_id)
+
+    # Add traffic lights
+    traffic_coords = [[[186,10],[191,10],[196,10]],[[186,-73],[189,-73],[196,-73]],
+                        [[58,-117],[58,-120],[58,-127]],[[7,-2],[7,-5],[7,-11]],
+                        [[29,-12.5],[29,-5],[29,-2.5]],[[119,-14],[119,-5],[119,-2]],
+                        [[178,-13],[178,-8],[178,-3]],[[147,-51],[147,-56],[147,-61]],
+                        [[140,-21],[135,-21],[130,-21]],[[147,-1],[147,-6],[147,-11]],
+                        [[131,-45],[136,-45],[141,-45]],[[59,-2],[59,-7],[59,-12]],
+                        [[38,-45],[42,-45],[48,-45]],[[57,-53],[57,-58],[57,-63]],
+                        [[122,-62],[122,-57],[122,-52]],[[129,-45],[134,-45],[139,-45]],
+                        [[139,-21],[134,-21],[129,-21]]]
+    for i in range(len(traffic_coords)):
+        s = Signal(i, map)
+        types = [map_signal_pb2.Subsignal.CIRCLE, map_signal_pb2.Subsignal.CIRCLE, map_signal_pb2.Subsignal.CIRCLE]
+        type = map_signal_pb2.Signal.MIX_3_VERTICAL
+        heading = 0
+        s.add(3, types, type, traffic_coords[i], heading, [i])
 
     # Create basic junction objects
     for junction in junctions:
